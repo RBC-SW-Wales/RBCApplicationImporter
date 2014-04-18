@@ -43,9 +43,6 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RbcTools.Library">
-      <HintPath>..\references\RbcTools.Library.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -85,6 +82,12 @@
   <ItemGroup>
     <Folder Include="Commands" />
     <Folder Include="Helpers" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\externals\RbcTools.Library\src\Library\RbcTools.Library.csproj">
+      <Project>{B756777A-A247-47B2-B2ED-8A9121EC787D}</Project>
+      <Name>RbcTools.Library</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
