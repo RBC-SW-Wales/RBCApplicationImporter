@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\MakeBadges.cs" />
     <Compile Include="Commands\ClearCommand.cs" />
     <Compile Include="Commands\CommandExtentions.cs" />
     <Compile Include="Commands\CongregationLookup.cs" />
