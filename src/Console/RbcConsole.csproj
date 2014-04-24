@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\MakeBadges.cs" />
     <Compile Include="Commands\ClearCommand.cs" />
     <Compile Include="Commands\CommandExtentions.cs" />
     <Compile Include="Commands\CongregationLookup.cs" />
@@ -64,7 +65,7 @@
     <Compile Include="Commands\ImportFiles.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\ListCongregations.cs" />
-    <Compile Include="Commands\QueryDepartments.cs" />
+    <Compile Include="Commands\ListDepartments.cs" />
     <Compile Include="Commands\QueryVolunteers.cs" />
     <Compile Include="Commands\ShowFileFields.cs" />
     <Compile Include="Commands\VolunteerLookup.cs" />
@@ -79,14 +80,14 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Library\RbcTools.Library.csproj">
+    <Folder Include="Commands" />
+    <Folder Include="Helpers" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\externals\RbcTools.Library\src\Library\RbcTools.Library.csproj">
       <Project>{B756777A-A247-47B2-B2ED-8A9121EC787D}</Project>
       <Name>RbcTools.Library</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands" />
-    <Folder Include="Helpers" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
