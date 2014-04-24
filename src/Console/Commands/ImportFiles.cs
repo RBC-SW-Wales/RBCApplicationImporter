@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using RbcConsole.Helpers;
@@ -34,6 +35,21 @@ namespace RbcConsole.Commands
 		
 		public override void Run()
 		{
+			if(!Volunteers.IsDataSynchronsed())
+			{
+				ConsoleX.WriteWarning("Warning: Volunteer records have not been synchronised!", false);
+				ConsoleX.WriteWarning("Attempting to synchronise now...");
+				if(Volunteers.TrySync())
+				{
+					ConsoleX.WriteWarning("Success!", true);
+				}
+				else
+				{
+					ConsoleX.WriteWarning("Failure! Could not synchronise at this time.", false);
+					ConsoleX.WriteWarning("If this message is persists, please contact IT Support.");
+				}
+			}
+			
 			this.SelectCongregation();
 			
 			if(this.skipCommand == false)
