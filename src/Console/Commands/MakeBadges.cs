@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using RbcTools.Library;
 using RbcTools.Library.Badges;
@@ -21,20 +22,43 @@ namespace RbcConsole.Commands
 			
 			if(department != null)
 			{
-				ConsoleX.WriteLine("Ok. Generating a PDF of badges for that department...");
+				List<Badge> badges = null;
 				
-				// Get ALL badges for a deparment.
-				var badges = Volunteers.GetBadgesByDepartment(department);
+				var allVolunteers = ConsoleX.WriteBooleanQuery("Do you want badges for ALL volunteers on this department?");
 				
-				// Use BadgePdfBuilder to create badges PDF
-				var builder = new BadgePdfBuilder(badges);
-				// Create the file and return filename
-				var fileName = builder.CreatePdf();
+				if(allVolunteers)
+				{
+					// Get ALL badges for a deparment.
+					badges = Volunteers.GetBadgesByDepartment(department);
+				}
+				else
+				{
+					ConsoleX.WriteLine("Here's a list of all the volunteers in this department.");
+					ConsoleX.WriteDataTable(Volunteers.GetByDepartment(department));
+					
+					var volunteerIds = ConsoleX.WriteIntegerListQuery("Please enter the ID for each volunteer you want a badge for.");
+					badges = Volunteers.GetBadgesByVolunteerIdList(volunteerIds);
+				}
 				
-				// Open the file.
-				ConsoleX.WriteLine("Opening the file for you.");
-				var process = Process.Start(fileName);
-				ConsoleX.WriteLine("Done.");
+				if(badges != null && badges.Count > 0)
+				{
+					ConsoleX.WriteLine("Ok. Generating a PDF of badges for you...");
+					
+					// Use BadgePdfBuilder to create badges PDF
+					var builder = new BadgePdfBuilder(badges);
+					// Create the file and return filename
+					var fileName = builder.CreatePdf();
+					
+					// Open the file.
+					ConsoleX.WriteLine("Opening the file for you.");
+					var process = Process.Start(fileName);
+					ConsoleX.WriteLine("Done.");
+					
+				}
+				else
+				{
+					ConsoleX.WriteLine("No volunteers selected or found in chosen department.");
+				}
 			}
 			else
 				ConsoleX.WriteLine("Import Files Skipped", ConsoleColor.Red);

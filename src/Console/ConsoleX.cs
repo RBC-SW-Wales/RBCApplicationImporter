@@ -182,6 +182,54 @@ namespace RbcConsole
 			return number;
 		}
 		
+		public List<int> WriteIntegerListQuery(string text, bool allowSkip = false)
+		{
+			this.WriteLine(text, false);
+			List<int> numbers = new List<int>();
+			bool parsed = false;
+			
+			do
+			{
+				if(allowSkip)
+					this.WriteLine("Please enter numbers (e.g. 10, 11, 12) or leave blank to skip:", ConsoleColor.DarkGray);
+				else
+					this.WriteLine("Please enter numbers (e.g. 10, 11, 12):", ConsoleColor.DarkGray);
+				
+				var input = this.ReadPromt();
+				
+				if(allowSkip && input == "")
+				{
+					parsed = true;
+				}
+				else
+				{
+					var splitInput = input.Split(',');
+					foreach(var item in splitInput)
+					{
+						// Try and parse each string ('item') into a number.
+						// If a value parses fine, then set 'parsed' to true.
+						// If the next value doesn't work 'parsed' will be set back
+						// to false and we will break out of the loop.
+						int number;
+						if(int.TryParse(item, out number))
+						{
+							numbers.Add(number);
+							parsed = true;
+						}
+						else
+						{
+							numbers.Clear();
+							parsed = false;
+							break;
+						}
+					}
+				}
+			}
+			while(!parsed);
+			
+			return numbers;
+		}
+		
 		public string WriteClipboardQuery(string fieldName)
 		{
 			this.WriteLine(string.Format("Please HIGHLIGHT & COPY the '{0}'. Then return here and press any key to PASTE.", fieldName));
