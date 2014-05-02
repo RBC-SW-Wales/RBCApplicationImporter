@@ -32,6 +32,35 @@ namespace RbcConsole
 			this.WriteLine(text, ConsoleColor.Yellow, blankAfter);
 		}
 		
+		private int ReadIntegerPrompt(int maxAllowed = int.MaxValue, bool allowSkip = false)
+		{
+			int number;
+			bool parsed = false;
+			
+			do
+			{
+				if(allowSkip)
+					this.WriteLine("Please enter a number (leave blank to skip):", ConsoleColor.DarkGray);
+				else
+					this.WriteLine("Please enter a number:", ConsoleColor.DarkGray);
+				
+				var input = this.ReadPromt();
+				
+				if(allowSkip && input == "")
+				{
+					number = int.MinValue;
+					parsed = true;
+				}
+				else if(int.TryParse(input, out number) && number <= maxAllowed)
+				{
+					parsed = true;
+				}
+			}
+			while(!parsed);
+			
+			return number;
+		}
+		
 		public string ReadPromt(List<string> tabPossibilities = null)
 		{
 			var input = string.Empty;
@@ -151,35 +180,25 @@ namespace RbcConsole
 			return returnDate;
 		}
 		
+		public int WriteMultipleChoiceQuery(string text, params string[] options)
+		{
+			this.WriteLine(text);
+			
+			this.WriteLine("Please select from the following options:");
+			for(var i = 0; i < options.Length; i++)
+			{
+				var option = options[i];
+				this.WriteLine(string.Format("    {0}. {1}", i+1, option));
+			}
+			
+			return this.ReadIntegerPrompt(maxAllowed:options.Length, allowSkip:true);
+		}
+		
 		public int WriteIntegerQuery(string text, bool allowSkip = false)
 		{
 			this.WriteLine(text, false);
 			
-			int number;
-			bool parsed = false;
-			
-			do
-			{
-				if(allowSkip)
-					this.WriteLine("Please enter a number (leave blank to skip):", ConsoleColor.DarkGray);
-				else
-					this.WriteLine("Please enter a number:", ConsoleColor.DarkGray);
-				
-				var input = this.ReadPromt();
-				
-				if(allowSkip && input == "")
-				{
-					number = int.MinValue;
-					parsed = true;
-				}
-				else if(int.TryParse(input, out number))
-				{
-					parsed = true;
-				}
-			}
-			while(!parsed);
-			
-			return number;
+			return this.ReadIntegerPrompt(allowSkip:allowSkip);
 		}
 		
 		public List<int> WriteIntegerListQuery(string text, bool allowSkip = false)
