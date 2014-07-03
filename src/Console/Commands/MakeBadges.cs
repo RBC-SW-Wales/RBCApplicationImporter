@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using RbcTools.Library;
 using RbcTools.Library.Badges;
@@ -8,6 +9,8 @@ namespace RbcConsole.Commands
 {
 	public class MakeBadges : CommandBase
 	{
+		#region Constructor
+		
 		public MakeBadges()
 		{
 			base.Slug = "make-badges";
@@ -15,29 +18,108 @@ namespace RbcConsole.Commands
 			base.IsDatabaseCommand = true;
 		}
 		
+		#endregion
+		
+		#region Fields
+		
+		private bool skipCommand = false;
+		
+		#endregion
+		
+		#region Methods
+		
 		public override void Run()
 		{
-			var department = SelectDepartment();
+			var option = ConsoleX.WriteMultipleChoiceQuery(
+				"What type of badges to you want to create?",
+				"RBC Volunteer badges",
+				"Local Volunteer badges");
 			
-			if(department != null)
+			switch(option)
 			{
-				ConsoleX.WriteLine("Ok. Generating a PDF of badges for that department...");
-				
-				// Get ALL badges for a deparment.
-				var badges = Volunteers.GetBadgesByDepartment(department);
-				
-				// Use BadgePdfBuilder to create badges PDF
-				var builder = new BadgePdfBuilder(badges);
-				// Create the file and return filename
-				var fileName = builder.CreatePdf();
-				
-				// Open the file.
-				ConsoleX.WriteLine("Opening the file for you.");
-				var process = Process.Start(fileName);
-				ConsoleX.WriteLine("Done.");
+				case 1:
+					this.MakeRbcVolunteerBadges();
+					break;
+				case 2:
+					this.MakeLocalVolunteerBadges();
+					break;
+				case int.MinValue:
+					this.skipCommand = true;
+					break;
+			}
+			
+			if(this.skipCommand)
+				ConsoleX.WriteLine("Make Badges Skipped", ConsoleColor.Red);
+		}
+		
+		private void MakeRbcVolunteerBadges()
+		{
+			var department = SelectDepartment();
+			if(department == null)
+			{
+				this.skipCommand = true;
 			}
 			else
-				ConsoleX.WriteLine("Import Files Skipped", ConsoleColor.Red);
+			{
+				List<Badge> badges = null;
+				
+				var allVolunteers = ConsoleX.WriteBooleanQuery("Do you want badges for ALL volunteers on this department?");
+				
+				if(allVolunteers)
+				{
+					// Get ALL badges for a deparment.
+					badges = Volunteers.GetBadgesByDepartment(department);
+				}
+				else
+				{
+					ConsoleX.WriteLine("Here's a list of all the volunteers in this department.");
+					ConsoleX.WriteDataTable(Volunteers.GetByDepartment(department));
+					
+					var volunteerIds = ConsoleX.WriteIntegerListQuery("Please enter the ID for each volunteer you want a badge for.");
+					badges = Volunteers.GetBadgesByVolunteerIdList(volunteerIds);
+				}
+				
+				if(badges != null && badges.Count > 0)
+				{
+					MakePdfFile(badges);
+				}
+				else
+				{
+					ConsoleX.WriteLine("No volunteers selected or found in chosen department.");
+				}
+			}
+		}
+		
+		private void MakeLocalVolunteerBadges()
+		{
+			var badgeCount = ConsoleX.WriteIntegerQuery("How many local volunteer badges do you want?");
+			if(badgeCount == int.MinValue)
+			{
+				this.skipCommand = true;
+			}
+			else
+			{
+				List<Badge> badges = new List<Badge>();
+				
+				for(var i = 0; i < badgeCount; i++)
+					badges.Add(new Badge());
+				
+				this.MakePdfFile(badges, useLocalVolunteerDesign:true);
+			}
+		}
+		
+		private void MakePdfFile(List<Badge> badges, bool useLocalVolunteerDesign = false)
+		{
+			ConsoleX.WriteLine("Ok. Generating a PDF of badges for you...");
+			// Use BadgePdfBuilder to create badges PDF
+			// Create the file and return filename
+			var builder = new BadgePdfBuilder(badges);
+			builder.UseLocalVolunteerDesign = useLocalVolunteerDesign;
+			var fileName = builder.CreatePdf();
+			// Open the file.
+			ConsoleX.WriteLine("Opening the file for you.");
+			var process = Process.Start(fileName);
+			ConsoleX.WriteLine("Done.");
 		}
 		
 		private Department SelectDepartment()
@@ -75,5 +157,6 @@ namespace RbcConsole.Commands
 			return department;
 		}
 		
+		#endregion
 	}
 }

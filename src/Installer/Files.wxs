@@ -43,6 +43,12 @@
 			<Component Id="ITextSharp" Guid="34A79DA4-A47F-44AD-95BA-D2C8942FC6CE" DiskId="1">
 				<File Id="itextsharp.dll" Name="itextsharp.dll" Source="..\Console\bin\Debug\itextsharp.dll" KeyPath="yes" />
 			</Component>
+			<Component Id="MigraDocDocumentObjectModel" Guid="7E9E8C95-48C1-4F42-B91E-62ED66B86602" DiskId="1">
+				<File Id="MigraDoc.DocumentObjectModel.dll" Name="MigraDoc.DocumentObjectModel.dll" Source="..\Console\bin\Debug\MigraDoc.DocumentObjectModel.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="PdfSharp" Guid="F746A364-BB80-4CA7-B80F-C961EF9DC2AA" DiskId="1">
+				<File Id="PdfSharp.dll" Name="PdfSharp.dll" Source="..\Console\bin\Debug\PdfSharp.dll" KeyPath="yes" />
+			</Component>
 			<Component Id="RbcToolLibrary" Guid="FCC314BD-9DC1-45D2-8DB3-8605A20D5BD9" DiskId="1">
 				<File Id="RbcTools.Library.dll" Name="RbcTools.Library.dll" Source="..\Console\bin\Debug\RbcTools.Library.dll" KeyPath="yes" />
 			</Component>
@@ -55,7 +61,7 @@
 		<DirectoryRef Id="MENUDIR">
 			<Component Id="ApplicationShortcut" Guid="D02F8404-3A45-4EA2-A4E3-D200642D823C">
 				<Shortcut Id="ApplicationStartMenuShortcut"
-				          Name="RBC Console v1.0.2"
+				          Name="RBC Console v1.1.2"
 				          Description="RBC Console application for interfacing with RBC database"
 				          Target="[#RbcConsole.exe]"
 				          WorkingDirectory="CONSOLEDIR"/>
