@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using RbcConsole.Helpers;
 using RbcTools.Library;
@@ -819,13 +820,46 @@ namespace RbcConsole.Commands
 		{
 			if(ConsoleX.WriteBooleanQuery("Shall I save to the database? (Say no to skip this file)"))
 			{
-				this.CurrentVolunteer.SaveToDatabase();
-//				ConsoleX.WriteWarning("DISABLED: Please note that the saving functionality is currently disabled in this test");
+				bool notSaved = true;
 				
-				if(this.CurrentVolunteer.ID == 0)
-					ConsoleX.WriteLine("DONE: Inserted a new record to the database!", ConsoleColor.Magenta);
-				else
-					ConsoleX.WriteLine("DONE: Updated the record in the database!", ConsoleColor.Magenta);
+				while(notSaved)
+				{
+					ConsoleX.WriteLine("Testing database connection...");
+					var logDescription = string.Format("Saving Volunteer from RBC Console. Name: {0} ID: {1}",
+					                                   this.CurrentVolunteer.FullName,
+					                                   this.CurrentVolunteer.IsNewID ? "NEW" : this.CurrentVolunteer.ID.ToString());
+					
+					ActivityLog.SaveEntry(logDescription);
+					
+					Thread.Sleep(new TimeSpan(0, 0, 10).Milliseconds); // Wait 10 seconds to allow sync with server
+					
+					if(ActivityLog.IsDataSynchronsed())
+					{
+						ConsoleX.WriteLine("Database connection is OK. Continuing to save...");
+						
+//						this.CurrentVolunteer.SaveToDatabase();
+						ConsoleX.WriteWarning("DISABLED: Please note that the saving functionality is currently disabled in this test");
+						
+						if(this.CurrentVolunteer.IsNewID)
+							ConsoleX.WriteLine("DONE: Inserted a new record to the database!", ConsoleColor.Magenta);
+						else
+							ConsoleX.WriteLine("DONE: Updated the record in the database!", ConsoleColor.Magenta);
+						
+						notSaved = false;
+					}
+					else
+					{
+						ActivityLog.DeleteUnsyncronisedEntry();
+						ConsoleX.WriteLine("Database connection failed.");
+						
+						if(!ConsoleX.WriteBooleanQuery("Shall I try again?"))
+						{
+							notSaved = false;
+							this.skipFile = true;
+						}
+					}
+				}
+				
 			}
 			else
 			{
