@@ -21,7 +21,10 @@ namespace RbcConsole.Commands
 		public void Execute()
 		{
 			if(this.IsDatabaseCommand)
+			{
 				AccessFileHelper.CheckForAccessFile(this.ConsoleX);
+				DatabaseStateHelper.TestDatabaseState(this.ConsoleX);
+			}
 			
 			if(!this.SkipIntroAndRule)
 				ConsoleX.WriteIntro(this.Description);

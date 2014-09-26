@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+
 using RbcConsole.Helpers;
 using RbcTools.Library;
 using RbcTools.Library.Database;
@@ -36,20 +38,6 @@ namespace RbcConsole.Commands
 		
 		public override void Run()
 		{
-			if(!Volunteers.IsDataSynchronsed())
-			{
-				ConsoleX.WriteWarning("Warning: Volunteer records have not been synchronised!", false);
-				ConsoleX.WriteWarning("Attempting to synchronise now...");
-				if(Volunteers.TrySync())
-				{
-					ConsoleX.WriteWarning("Success!", true);
-				}
-				else
-				{
-					ConsoleX.WriteWarning("Failure! Could not synchronise at this time.", false);
-					ConsoleX.WriteWarning("If this message is persists, please contact IT Support.");
-				}
-			}
 			
 			this.SelectCongregation();
 			
@@ -824,18 +812,11 @@ namespace RbcConsole.Commands
 				
 				while(notSaved)
 				{
-					ConsoleX.WriteLine("Testing database connection...");
-					var logDescription = string.Format("Saving Volunteer from RBC Console. Name: {0} ID: {1}",
-					                                   this.CurrentVolunteer.FullName,
-					                                   this.CurrentVolunteer.IsNewID ? "NEW" : this.CurrentVolunteer.ID.ToString());
+					ConsoleX.WriteLine("Testing internet connection...");
 					
-					ActivityLog.SaveEntry(logDescription);
-					
-					Thread.Sleep(new TimeSpan(0, 0, 10).Milliseconds); // Wait 10 seconds to allow sync with server
-					
-					if(ActivityLog.IsDataSynchronsed())
+					if(this.IsInternetConnectionOk())
 					{
-						ConsoleX.WriteLine("Database connection is OK. Continuing to save...");
+						ConsoleX.WriteLine("Internet connection is OK. Continuing to save...", ConsoleColor.Green);
 						
 //						this.CurrentVolunteer.SaveToDatabase();
 						ConsoleX.WriteWarning("DISABLED: Please note that the saving functionality is currently disabled in this test");
@@ -845,12 +826,15 @@ namespace RbcConsole.Commands
 						else
 							ConsoleX.WriteLine("DONE: Updated the record in the database!", ConsoleColor.Magenta);
 						
+						ActivityLog.SaveEntry(string.Format("Saving Volunteer from RBC Console. Name: {0} ID: {1}",
+						                                    this.CurrentVolunteer.FullName,
+						                                    this.CurrentVolunteer.IsNewID ? "NEW" : this.CurrentVolunteer.ID.ToString()));
+						
 						notSaved = false;
 					}
 					else
 					{
-						ActivityLog.DeleteUnsyncronisedEntry();
-						ConsoleX.WriteLine("Database connection failed.");
+						ConsoleX.WriteLine("Internet connection is NOT OK. Please reconnect to the internet to save.", ConsoleColor.Yellow);
 						
 						if(!ConsoleX.WriteBooleanQuery("Shall I try again?"))
 						{
@@ -912,6 +896,22 @@ namespace RbcConsole.Commands
 					process.Kill();
 				}
 				catch (Exception) {}
+			}
+		}
+		
+		public bool IsInternetConnectionOk()
+		{
+			try
+			{
+				using (var client = new WebClient())
+					using (var stream = client.OpenRead("http://www.google.com"))
+				{
+					return true;
+				}
+			}
+			catch(Exception)
+			{
+				return false;
 			}
 		}
 		
