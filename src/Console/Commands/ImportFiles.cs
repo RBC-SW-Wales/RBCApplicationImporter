@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Net;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
+
 using RbcConsole.Helpers;
 using RbcTools.Library;
 using RbcTools.Library.Database;
@@ -34,6 +38,7 @@ namespace RbcConsole.Commands
 		
 		public override void Run()
 		{
+			
 			this.SelectCongregation();
 			
 			if(this.skipCommand == false)
@@ -803,13 +808,42 @@ namespace RbcConsole.Commands
 		{
 			if(ConsoleX.WriteBooleanQuery("Shall I save to the database? (Say no to skip this file)"))
 			{
-				this.CurrentVolunteer.SaveToDatabase();
-//				ConsoleX.WriteWarning("DISABLED: Please note that the saving functionality is currently disabled in this test");
+				bool notSaved = true;
 				
-				if(this.CurrentVolunteer.ID == 0)
-					ConsoleX.WriteLine("DONE: Inserted a new record to the database!", ConsoleColor.Magenta);
-				else
-					ConsoleX.WriteLine("DONE: Updated the record in the database!", ConsoleColor.Magenta);
+				while(notSaved)
+				{
+					ConsoleX.WriteLine("Testing internet connection...");
+					
+					if(this.IsInternetConnectionOk())
+					{
+						ConsoleX.WriteLine("Internet connection is OK. Continuing to save...", ConsoleColor.Green);
+						
+						this.CurrentVolunteer.SaveToDatabase();
+//						ConsoleX.WriteWarning("DISABLED: Please note that the saving functionality is currently disabled in this test");
+						
+						if(this.CurrentVolunteer.IsNewID)
+							ConsoleX.WriteLine("DONE: Inserted a new record to the database!", ConsoleColor.Magenta);
+						else
+							ConsoleX.WriteLine("DONE: Updated the record in the database!", ConsoleColor.Magenta);
+						
+						ActivityLog.SaveEntry(string.Format("Saving Volunteer from RBC Console. Name: {0} ID: {1}",
+						                                    this.CurrentVolunteer.FullName,
+						                                    this.CurrentVolunteer.IsNewID ? "NEW" : this.CurrentVolunteer.ID.ToString()));
+						
+						notSaved = false;
+					}
+					else
+					{
+						ConsoleX.WriteLine("Internet connection is NOT OK. Please reconnect to the internet to save.", ConsoleColor.Yellow);
+						
+						if(!ConsoleX.WriteBooleanQuery("Shall I try again?"))
+						{
+							notSaved = false;
+							this.skipFile = true;
+						}
+					}
+				}
+				
 			}
 			else
 			{
@@ -862,6 +896,22 @@ namespace RbcConsole.Commands
 					process.Kill();
 				}
 				catch (Exception) {}
+			}
+		}
+		
+		public bool IsInternetConnectionOk()
+		{
+			try
+			{
+				using (var client = new WebClient())
+					using (var stream = client.OpenRead("http://www.google.com"))
+				{
+					return true;
+				}
+			}
+			catch(Exception)
+			{
+				return false;
 			}
 		}
 		
