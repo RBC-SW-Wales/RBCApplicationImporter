@@ -818,8 +818,8 @@ namespace RbcConsole.Commands
 					{
 						ConsoleX.WriteLine("Internet connection is OK. Continuing to save...", ConsoleColor.Green);
 						
-//						this.CurrentVolunteer.SaveToDatabase();
-						ConsoleX.WriteWarning("DISABLED: Please note that the saving functionality is currently disabled in this test");
+						this.CurrentVolunteer.SaveToDatabase();
+//						ConsoleX.WriteWarning("DISABLED: Please note that the saving functionality is currently disabled in this test");
 						
 						if(this.CurrentVolunteer.IsNewID)
 							ConsoleX.WriteLine("DONE: Inserted a new record to the database!", ConsoleColor.Magenta);
