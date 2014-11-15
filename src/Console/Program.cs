@@ -39,6 +39,7 @@ namespace RbcConsole
 //			list.Add(new QueryVolunteers());
 			list.Add(new ListDepartments());
 			list.Add(new CheckDatabase());
+			list.Add(new ReloadDatabase());
 			list.Add(new HelpCommand());
 			list.Add(new ClearCommand());
 			return list;

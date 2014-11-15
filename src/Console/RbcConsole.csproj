@@ -70,6 +70,7 @@
     <Compile Include="Commands\ListCongregations.cs" />
     <Compile Include="Commands\ListDepartments.cs" />
     <Compile Include="Commands\QueryVolunteers.cs" />
+    <Compile Include="Commands\ReloadDatabase.cs" />
     <Compile Include="Commands\ShowFileFields.cs" />
     <Compile Include="Commands\VolunteerLookup.cs" />
     <Compile Include="ConsoleX.cs" />
