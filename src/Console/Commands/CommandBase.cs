@@ -16,6 +16,8 @@ namespace RbcConsole.Commands
 		
 		public bool IsDatabaseCommand { get; set; }
 		
+		public bool IsAdminCommand { get; set; }
+		
 		public bool SkipIntroAndRule { get; set; }
 		
 		public void Execute()

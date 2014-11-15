@@ -9,7 +9,7 @@ namespace RbcConsole.Helpers
 		public static void TestDatabaseState(ConsoleX consoleX, bool showTestFeedback = false)
 		{
 			if(showTestFeedback)
-				consoleX.WriteLine("Ok, let's check the database for synchronisation issues.");
+				consoleX.WriteLine("Ok, let's check the database for synchronisation issues...");
 			
 			if(!DatabaseState.IsDataSynchronised())
 			{
