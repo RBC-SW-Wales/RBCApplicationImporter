@@ -14,27 +14,43 @@ namespace RbcConsole.Commands.Admin
 			base.Slug = "unsynchronised-data";
 			base.Description = "List the unsynchronised Volunteer data";
 			base.IsDatabaseCommand = true;
+			base.SkipTestDatabaseState = true;
 			base.IsAdminCommand = true;
 		}
 		
 		public override void Run()
 		{
-			ConsoleX.WriteLine("Here's the unsynchronised activity log:");
-			
 			var activty = DatabaseState.GetUnsynchronisedActivity();
-			ConsoleX.WriteDataTable(activty, 100, false, true);
 			
-			if(activty.Rows.Count >= 100)
-				ConsoleX.WriteWarning("There are at least 100 unsynchronised activity log entries. There could be more!", false);
-			
-			ConsoleX.WriteLine("Here's the NEW Volunteers that have not been synchronised:");
+			if(activty.Rows.Count == 0)
+			{
+				ConsoleX.WriteLine("No unsynchronised activity found!", ConsoleColor.Green);
+			}
+			else
+			{
+				ConsoleX.WriteLine("Here's the unsynchronised activity log:");
+				
+				ConsoleX.WriteDataTable(activty, 100, false, true);
+				
+				if(activty.Rows.Count >= 100)
+					ConsoleX.WriteWarning("There are at least 100 unsynchronised activity log entries. There could be more!", false);
+			}
 			
 			var volunteers = DatabaseState.GetUnsynchronisedVolunteers();
-			ConsoleX.WriteDataTable(volunteers);
 			
-			if(volunteers.Rows.Count >= 100)
-				ConsoleX.WriteWarning("There are at least 100 unsynchronised new Volunteers. There could be more!", false);
-			
+			if(volunteers.Rows.Count == 0)
+			{
+				ConsoleX.WriteLine("No unsynchronised NEW Volunteers found!", ConsoleColor.Green);
+			}
+			else
+			{
+				ConsoleX.WriteLine("Here's the NEW Volunteers that have not been synchronised:");
+				
+				ConsoleX.WriteDataTable(volunteers);
+				
+				if(volunteers.Rows.Count >= 100)
+					ConsoleX.WriteWarning("There are at least 100 unsynchronised new Volunteers. There could be more!", false);
+			}
 		}
 	}
 }
