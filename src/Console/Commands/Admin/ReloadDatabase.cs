@@ -4,7 +4,7 @@ using System.Threading;
 using RbcConsole.Helpers;
 using RbcTools.Library.Database;
 
-namespace RbcConsole.Commands
+namespace RbcConsole.Commands.Admin
 {
 	public class ReloadDatabase : CommandBase
 	{

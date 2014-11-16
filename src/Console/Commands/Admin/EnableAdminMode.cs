@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RbcConsole.Commands
+namespace RbcConsole.Commands.Admin
 {
 	public class EnableAdminMode : CommandBase
 	{

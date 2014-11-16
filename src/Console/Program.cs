@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 
 using RbcConsole.Commands;
+using RbcConsole.Commands.Admin;
 using RbcConsole.Helpers;
 
 namespace RbcConsole
@@ -38,7 +39,8 @@ namespace RbcConsole
 //			list.Add(new VolunteerLookup());
 //			list.Add(new QueryVolunteers());
 			list.Add(new ListDepartments());
-			list.Add(new CheckDatabase());
+			list.Add(new FixSynchroniseIssue());
+			list.Add(new ListUnsynchronisedData());
 			list.Add(new ReloadDatabase());
 			list.Add(new HelpCommand());
 			list.Add(new ClearCommand());

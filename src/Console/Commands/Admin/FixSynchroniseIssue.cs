@@ -1,14 +1,14 @@
 ﻿using System;
 using RbcConsole.Helpers;
 
-namespace RbcConsole.Commands
+namespace RbcConsole.Commands.Admin
 {
-	public class CheckDatabase : CommandBase
+	public class FixSynchroniseIssue : CommandBase
 	{
-		public CheckDatabase()
+		public FixSynchroniseIssue()
 		{
-			base.Slug = "check-database";
-			base.Description = "Check the database for synchronisation issues.";
+			base.Slug = "fix-sync-issue";
+			base.Description = "Check the database for synchronisation issues and fix if possible.";
 			base.IsAdminCommand = true;
 		}
 		
