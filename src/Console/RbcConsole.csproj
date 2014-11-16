@@ -58,8 +58,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\CheckDatabase.cs" />
-    <Compile Include="Commands\EnableAdminMode.cs" />
+    <Compile Include="Commands\Admin\CheckDatabase.cs" />
+    <Compile Include="Commands\Admin\EnableAdminMode.cs" />
+    <Compile Include="Commands\Admin\ReloadDatabase.cs" />
     <Compile Include="Commands\MakeBadges.cs" />
     <Compile Include="Commands\ClearCommand.cs" />
     <Compile Include="Commands\CommandExtentions.cs" />
@@ -70,7 +71,6 @@
     <Compile Include="Commands\ListCongregations.cs" />
     <Compile Include="Commands\ListDepartments.cs" />
     <Compile Include="Commands\QueryVolunteers.cs" />
-    <Compile Include="Commands\ReloadDatabase.cs" />
     <Compile Include="Commands\ShowFileFields.cs" />
     <Compile Include="Commands\VolunteerLookup.cs" />
     <Compile Include="ConsoleX.cs" />
@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands" />
+    <Folder Include="Commands\Admin" />
     <Folder Include="Helpers" />
   </ItemGroup>
   <ItemGroup>
