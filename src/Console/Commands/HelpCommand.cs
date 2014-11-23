@@ -15,7 +15,12 @@ namespace RbcConsole.Commands
 			ConsoleX.WriteLine("Available commands are:");
 			foreach(var command in Program.CommandList)
 			{
-				ConsoleX.WriteLine(string.Format("{0, -20} - {1}", command.Slug, command.Description));
+				var output = string.Format("{0, -20} - {1}", command.Slug, command.Description);
+				if(command.IsAdminCommand)
+					ConsoleX.WriteLine(output, ConsoleColor.Yellow, true);
+				else
+					ConsoleX.WriteLine(output);
+				
 			}
 			ConsoleX.WriteLine(string.Format("{0, -20} - {1}", "exit", "Exit/close the application"));
 		}

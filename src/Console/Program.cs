@@ -1,20 +1,34 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 using RbcConsole.Commands;
+using RbcConsole.Commands.Admin;
 using RbcConsole.Helpers;
 
 namespace RbcConsole
 {
 	class Program
 	{
-		public static List<CommandBase> CommandList = BuildCommandList();
+		
+		
+		public static List<CommandBase> AllCommands = GetAllCommands();
+		
+		public static List<CommandBase> CommandList
+		{
+			get
+			{
+				return (from c in Program.AllCommands
+				        where (Program.UseAdminMode ? true : c.IsAdminCommand == false)
+				        select c).ToList();
+			}
+		}
 		
 		public static ConsoleX ConsoleX = new ConsoleX();
 		
-		private static List<CommandBase> BuildCommandList()
+		private static List<CommandBase> GetAllCommands()
 		{
 			var list = new List<CommandBase>();
 			list.Add(new ImportFiles());
@@ -25,10 +39,17 @@ namespace RbcConsole
 //			list.Add(new VolunteerLookup());
 //			list.Add(new QueryVolunteers());
 			list.Add(new ListDepartments());
+			list.Add(new FixSynchroniseIssue());
+			list.Add(new ListUnsynchronisedData());
+			list.Add(new ReloadDatabase());
 			list.Add(new HelpCommand());
 			list.Add(new ClearCommand());
 			return list;
 		}
+		
+		private static EnableAdminMode adminMode = new EnableAdminMode();
+		
+		public static bool UseAdminMode { get; set; }
 		
 		[STAThread]
 		public static void Main(string[] args)
@@ -52,14 +73,24 @@ namespace RbcConsole
 						if(!string.IsNullOrEmpty(input))
 						{
 							var commandFound = false;
-							foreach(var command in Program.CommandList)
+							
+							if(input == adminMode.Slug)
 							{
-								if(command.Slug == input)
+								commandFound = true;
+								adminMode.Execute();
+							}
+							else
+							{
+								foreach(var command in Program.CommandList)
 								{
-									commandFound = true;
-									command.Execute();
+									if(command.Slug == input)
+									{
+										commandFound = true;
+										command.Execute();
+									}
 								}
 							}
+							
 							if(!commandFound)
 								ConsoleX.WriteLine("Command not found. Please try again.");
 						}

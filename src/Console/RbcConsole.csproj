@@ -58,6 +58,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Admin\FixSynchroniseIssue.cs" />
+    <Compile Include="Commands\Admin\EnableAdminMode.cs" />
+    <Compile Include="Commands\Admin\ListUnsynchronisedData.cs" />
+    <Compile Include="Commands\Admin\ReloadDatabase.cs" />
     <Compile Include="Commands\MakeBadges.cs" />
     <Compile Include="Commands\ClearCommand.cs" />
     <Compile Include="Commands\CommandExtentions.cs" />
@@ -83,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands" />
+    <Folder Include="Commands\Admin" />
     <Folder Include="Helpers" />
   </ItemGroup>
   <ItemGroup>

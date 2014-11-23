@@ -5,9 +5,6 @@ using RbcTools.Library.Database;
 
 namespace RbcConsole.Commands
 {
-	/// <summary>
-	/// Description of QueryVolunteers.
-	/// </summary>
 	public class QueryVolunteers : CommandBase
 	{
 		public QueryVolunteers()
