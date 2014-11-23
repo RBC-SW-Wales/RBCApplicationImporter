@@ -1,9 +1,8 @@
 ﻿
 using System;
 using System.Data;
-
+using RbcConsole.Helpers;
 using RbcTools.Library.Database;
-
 
 namespace RbcConsole.Commands.Admin
 {
@@ -20,20 +19,27 @@ namespace RbcConsole.Commands.Admin
 		
 		public override void Run()
 		{
-			var activty = DatabaseState.GetUnsynchronisedActivity();
-			
-			if(activty.Rows.Count == 0)
+			try
 			{
-				ConsoleX.WriteLine("No unsynchronised activity found!", ConsoleColor.Green);
+				var activty = DatabaseState.GetUnsynchronisedActivity();
+				
+				if(activty.Rows.Count == 0)
+				{
+					ConsoleX.WriteLine("No unsynchronised activity found!", ConsoleColor.Green);
+				}
+				else
+				{
+					ConsoleX.WriteLine("Here's the unsynchronised activity log:");
+					
+					ConsoleX.WriteDataTable(activty, 100, false, true);
+					
+					if(activty.Rows.Count >= 100)
+						ConsoleX.WriteWarning("There are at least 100 unsynchronised activity log entries. There could be more!", false);
+				}
 			}
-			else
+			catch (Exception ex)
 			{
-				ConsoleX.WriteLine("Here's the unsynchronised activity log:");
-				
-				ConsoleX.WriteDataTable(activty, 100, false, true);
-				
-				if(activty.Rows.Count >= 100)
-					ConsoleX.WriteWarning("There are at least 100 unsynchronised activity log entries. There could be more!", false);
+				ExceptionHelper.HandleException(ex, ConsoleX);
 			}
 			
 			var volunteers = DatabaseState.GetUnsynchronisedVolunteers();
